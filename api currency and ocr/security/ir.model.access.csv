@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_currency_api_user,currency.api.user,model_currency_api,base.group_user,1,1,1,0
+access_currency_api_manager,currency.api.manager,model_currency_api,base.group_system,1,1,1,1
+access_ocr_processor_user,ocr.processor.user,model_ocr_processor,base.group_user,1,1,1,0
+access_ocr_processor_manager,ocr.processor.manager,model_ocr_processor,base.group_system,1,1,1,1
+access_hr_expense_enhanced_user,hr.expense.enhanced.user,model_hr_expense,hr.group_hr_user,1,1,1,0
+access_hr_expense_enhanced_manager,hr.expense.enhanced.manager,model_hr_expense,hr.group_hr_manager,1,1,1,1

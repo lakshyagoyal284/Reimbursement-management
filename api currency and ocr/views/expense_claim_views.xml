@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Enhanced Expense Form View -->
+        <record id="view_hr_expense_form_enhanced" model="ir.ui.view">
+            <field name="name">hr.expense.form.enhanced</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='unit_amount']" position="before">
+                    <group name="currency_conversion" string="Currency Conversion">
+                        <field name="original_currency_id" options="{'no_create': True}"/>
+                        <field name="original_amount"/>
+                        <field name="converted_amount" readonly="1"/>
+                        <field name="exchange_rate" readonly="1"/>
+                    </group>
+                </xpath>
+                
+                <xpath expr="//field[@name='reference']" position="after">
+                    <group name="ocr_processing" string="OCR Processing">
+                        <field name="receipt_image" widget="image" options="{'preview_image': 'image_medium'}"/>
+                        <field name="restaurant_name"/>
+                        <field name="ocr_processed"/>
+                        <button name="action_process_ocr" type="object" string="Process Receipt OCR" 
+                                attrs="{'invisible': [('receipt_image', '=', False)]}" 
+                                class="oe_highlight"/>
+                    </group>
+                </xpath>
+                
+                <xpath expr="//field[@name='description']" position="attributes">
+                    <attribute name="placeholder">Description will be auto-filled from OCR if available</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Enhanced Expense Tree View -->
+        <record id="view_hr_expense_tree_enhanced" model="ir.ui.view">
+            <field name="name">hr.expense.tree.enhanced</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expense_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='unit_amount']" position="after">
+                    <field name="original_currency_id" optional="show"/>
+                    <field name="converted_amount" optional="show"/>
+                    <field name="restaurant_name" optional="hide"/>
+                    <field name="ocr_processed" widget="boolean_toggle" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Currency API Menu -->
+        <menuitem id="menu_currency_api" name="Currency API" parent="hr_expense.menu_expense_root" sequence="10"/>
+        
+        <record id="action_currency_api" model="ir.actions.act_window">
+            <field name="name">Currency Conversion</field>
+            <field name="res_model">currency.api</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Convert currencies using ExchangeRate API
+                </p>
+                <p>
+                    Use this tool to convert amounts between different currencies.
+                    The conversion rates are fetched from the ExchangeRate API.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_currency_api_conversion" name="Currency Conversion" 
+                  parent="menu_currency_api" action="action_currency_api" sequence="10"/>
+
+        <!-- OCR Processor Menu -->
+        <record id="action_ocr_processor" model="ir.actions.act_window">
+            <field name="name">OCR Processor</field>
+            <field name="res_model">ocr.processor</field>
+            <field name="view_mode">form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Process receipts with OCR
+                </p>
+                <p>
+                    Upload receipt images to automatically extract expense information
+                    using Optical Character Recognition (OCR).
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_ocr_processor" name="OCR Processor" 
+                  parent="menu_currency_api" action="action_ocr_processor" sequence="20"/>
+
+    </data>
+</odoo>
