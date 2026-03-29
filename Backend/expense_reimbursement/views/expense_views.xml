@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Expense Claim Form View -->
+        <record id="view_expense_claim_form" model="ir.ui.view">
+            <field name="name">expense.claim.form</field>
+            <field name="model">expense.claim</field>
+            <field name="arch" type="xml">
+                <form string="Expense Claim">
+                    <header>
+                        <button name="submit_expense" string="Submit" type="object" 
+                                attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                        <button name="manager_approve" string="Manager Approve" type="object" 
+                                attrs="{'invisible': [('status', '!=', 'submitted')]}"/>
+                        <button name="admin_approve" string="Final Approve" type="object" 
+                                attrs="{'invisible': [('status', '!=', 'manager_approved')]}"/>
+                        <button name="reject_expense" string="Reject" type="object" 
+                                attrs="{'invisible': [('status', 'not in', ['submitted', 'manager_approved'])]}"/>
+                        <button name="button_reset_to_draft" string="Reset to Draft" type="object" 
+                                attrs="{'invisible': [('status', '!=', 'rejected')]}"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,submitted,manager_approved,admin_approved,rejected"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="employee_id"/>
+                                <field name="manager_id"/>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="amount"/>
+                                <field name="currency_id"/>
+                                <field name="company_currency_amount" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Enter expense description..."/>
+                        </group>
+                        <group string="Comments">
+                            <field name="comment" placeholder="Add any additional comments..."/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Expense Claim Tree View -->
+        <record id="view_expense_claim_tree" model="ir.ui.view">
+            <field name="name">expense.claim.tree</field>
+            <field name="model">expense.claim</field>
+            <field name="arch" type="xml">
+                <tree string="Expense Claims">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="manager_id"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="date"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Expense Claim Search View -->
+        <record id="view_expense_claim_search" model="ir.ui.view">
+            <field name="name">expense.claim.search</field>
+            <field name="model">expense.claim</field>
+            <field name="arch" type="xml">
+                <search string="Expense Claims">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="manager_id"/>
+                    <field name="status"/>
+                    <field name="date"/>
+                    <separator/>
+                    <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                    <filter string="Submitted" name="submitted" domain="[('status', '=', 'submitted')]"/>
+                    <filter string="Manager Approved" name="manager_approved" domain="[('status', '=', 'manager_approved')]"/>
+                    <filter string="Admin Approved" name="admin_approved" domain="[('status', '=', 'admin_approved')]"/>
+                    <filter string="Rejected" name="rejected" domain="[('status', '=', 'rejected')]"/>
+                    <separator/>
+                    <filter string="My Expenses" name="my_expenses" domain="[('employee_id', '=', uid)]"/>
+                    <filter string="Team Expenses" name="team_expenses" domain="[('manager_id', '=', uid)]"/>
+                    <separator/>
+                    <filter string="This Month" name="this_month" domain="[('date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d')), ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Manager" name="group_manager" context="{'group_by': 'manager_id'}"/>
+                        <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Expense Claim Action -->
+        <record id="action_expense_claim" model="ir.actions.act_window">
+            <field name="name">Expense Claims</field>
+            <field name="res_model">expense.claim</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_expense_claim_tree"/>
+            <field name="search_view_id" ref="view_expense_claim_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first expense claim
+                </p>
+                <p>
+                    Use this menu to create and manage expense claims.
+                    You can track the status of your expenses through the approval workflow.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_expense_root" name="Expense Reimbursement" sequence="10"/>
+        
+        <menuitem id="menu_expense_claims" name="Expense Claims" parent="menu_expense_root" 
+                  action="action_expense_claim" sequence="1"/>
+        
+        <menuitem id="menu_expense_reporting" name="Reporting" parent="menu_expense_root" sequence="2"/>
+        
+        <menuitem id="menu_expense_configuration" name="Configuration" parent="menu_expense_root" sequence="3"/>
+    </data>
+</odoo>

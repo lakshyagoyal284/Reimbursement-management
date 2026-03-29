@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default Expense Categories -->
+        <record id="category_travel" model="expense.category">
+            <field name="name">Travel</field>
+            <field name="code">TRAVEL</field>
+            <field name="description">Travel related expenses</field>
+            <field name="requires_receipt">True</field>
+            <field name="auto_approve_amount">50</field>
+        </record>
+        
+        <record id="category_meals" model="expense.category">
+            <field name="name">Meals</field>
+            <field name="code">MEALS</field>
+            <field name="description">Meal expenses</field>
+            <field name="requires_receipt">True</field>
+            <field name="auto_approve_amount">25</field>
+        </record>
+        
+        <record id="category_office" model="expense.category">
+            <field name="name">Office Supplies</field>
+            <field name="code">OFFICE</field>
+            <field name="description">Office supplies and equipment</field>
+            <field name="requires_receipt">True</field>
+            <field name="auto_approve_amount">100</field>
+        </record>
+        
+        <record id="category_transport" model="expense.category">
+            <field name="name">Transportation</field>
+            <field name="code">TRANS</field>
+            <field name="description">Local transportation</field>
+            <field name="requires_receipt">True</field>
+            <field name="auto_approve_amount">30</field>
+        </record>
+        
+        <record id="category_accommodation" model="expense.category">
+            <field name="name">Accommodation</field>
+            <field name="code">ACCOM</field>
+            <field name="description">Hotel and accommodation</field>
+            <field name="requires_receipt">True</field>
+            <field name="auto_approve_amount">0</field>
+        </record>
+
+        <!-- Default Approval Rules -->
+        <record id="rule_unanimous" model="approval.rule">
+            <field name="name">Unanimous Approval</field>
+            <field name="rule_type">unanimous</field>
+            <field name="is_active">True</field>
+            <field name="min_approvers">1</field>
+        </record>
+        
+        <record id="rule_percentage_60" model="approval.rule">
+            <field name="name">60% Approval Rule</field>
+            <field name="rule_type">percentage</field>
+            <field name="percentage_threshold">60</field>
+            <field name="is_active">True</field>
+            <field name="min_approvers">2</field>
+        </record>
+        
+        <record id="rule_cfo_auto" model="approval.rule">
+            <field name="name">CFO Auto-Approval</field>
+            <field name="rule_type">specific_approver</field>
+            <field name="is_active">True</field>
+            <field name="min_approvers">1</field>
+        </record>
+        
+        <record id="rule_hybrid" model="approval.rule">
+            <field name="name">Hybrid Rule (60% or CFO)</field>
+            <field name="rule_type">hybrid</field>
+            <field name="percentage_threshold">60</field>
+            <field name="use_percentage">True</field>
+            <field name="use_specific">True</field>
+            <field name="is_active">True</field>
+            <field name="min_approvers">2</field>
+        </record>
+    </data>
+</odoo>

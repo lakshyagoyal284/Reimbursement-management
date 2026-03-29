@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Approval Step Form View -->
+        <record id="view_approval_step_form" model="ir.ui.view">
+            <field name="name">approval.step.form</field>
+            <field name="model">approval.step</field>
+            <field name="arch" type="xml">
+                <form string="Approval Step">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="expense_id"/>
+                                <field name="approver_id"/>
+                                <field name="sequence"/>
+                                <field name="is_required"/>
+                            </group>
+                            <group>
+                                <field name="status"/>
+                                <field name="approval_date"/>
+                                <field name="is_manager_approver"/>
+                            </group>
+                        </group>
+                        <group string="Comments">
+                            <field name="comments" placeholder="Add approval comments..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Approval Step Tree View -->
+        <record id="view_approval_step_tree" model="ir.ui.view">
+            <field name="name">approval.step.tree</field>
+            <field name="model">approval.step</field>
+            <field name="arch" type="xml">
+                <tree string="Approval Steps">
+                    <field name="expense_id"/>
+                    <field name="approver_id"/>
+                    <field name="sequence"/>
+                    <field name="status"/>
+                    <field name="approval_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Approval Rule Form View -->
+        <record id="view_approval_rule_form" model="ir.ui.view">
+            <field name="name">approval.rule.form</field>
+            <field name="model">approval.rule</field>
+            <field name="arch" type="xml">
+                <form string="Approval Rule">
+                    <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="rule_type"/>
+                            <field name="is_active"/>
+                        </group>
+                        <group>
+                            <field name="amount_threshold"/>
+                            <field name="min_approvers"/>
+                        </group>
+                    </group>
+                    <group string="Percentage Rule" attrs="{'invisible': [('rule_type', 'not in', ['percentage', 'hybrid'])]}">
+                        <field name="percentage_threshold"/>
+                    </group>
+                    <group string="Specific Approver Rule" attrs="{'invisible': [('rule_type', 'not in', ['specific_approver', 'hybrid'])]}">
+                        <field name="specific_approver_id"/>
+                        <field name="auto_approve_on_specific"/>
+                    </group>
+                    <group string="Hybrid Rule Settings" attrs="{'invisible': [('rule_type', '!=', 'hybrid')]}">
+                        <field name="use_percentage"/>
+                        <field name="use_specific"/>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Approval Rule Tree View -->
+        <record id="view_approval_rule_tree" model="ir.ui.view">
+            <field name="name">approval.rule.tree</field>
+            <field name="model">approval.rule</field>
+            <field name="arch" type="xml">
+                <tree string="Approval Rules">
+                    <field name="name"/>
+                    <field name="rule_type"/>
+                    <field name="is_active"/>
+                    <field name="percentage_threshold"/>
+                    <field name="min_approvers"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Approval Sequence Form View -->
+        <record id="view_approval_sequence_form" model="ir.ui.view">
+            <field name="name">approval.sequence.form</field>
+            <field name="model">approval.sequence</field>
+            <field name="arch" type="xml">
+                <form string="Approval Sequence">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="approver_id"/>
+                                <field name="sequence"/>
+                                <field name="is_required"/>
+                                <field name="is_active"/>
+                            </group>
+                            <group>
+                                <field name="amount_min"/>
+                                <field name="amount_max"/>
+                            </group>
+                        </group>
+                        <group string="Expense Categories">
+                            <field name="expense_category_ids" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Approval Sequence Tree View -->
+        <record id="view_approval_sequence_tree" model="ir.ui.view">
+            <field name="name">approval.sequence.tree</field>
+            <field name="model">approval.sequence</field>
+            <field name="arch" type="xml">
+                <tree string="Approval Sequence">
+                    <field name="sequence"/>
+                    <field name="approver_id"/>
+                    <field name="is_required"/>
+                    <field name="is_active"/>
+                    <field name="amount_min"/>
+                    <field name="amount_max"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Expense Category Form View -->
+        <record id="view_expense_category_form" model="ir.ui.view">
+            <field name="name">expense.category.form</field>
+            <field name="model">expense.category</field>
+            <field name="arch" type="xml">
+                <form string="Expense Category">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="parent_id"/>
+                                <field name="is_active"/>
+                            </group>
+                            <group>
+                                <field name="requires_receipt"/>
+                                <field name="max_amount"/>
+                                <field name="auto_approve_amount"/>
+                            </group>
+                        </group>
+                        <group string="Description">
+                            <field name="description" placeholder="Category description..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Expense Category Tree View -->
+        <record id="view_expense_category_tree" model="ir.ui.view">
+            <field name="name">expense.category.tree</field>
+            <field name="model">expense.category</field>
+            <field name="arch" type="xml">
+                <tree string="Expense Categories">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="parent_id"/>
+                    <field name="is_active"/>
+                    <field name="requires_receipt"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Company Configuration Form View -->
+        <record id="view_company_approval_config_form" model="ir.ui.view">
+            <field name="name">res.company.approval.config.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Expense Approval Configuration">
+                        <group string="Approval Settings">
+                            <group>
+                                <field name="enable_manager_approval"/>
+                                <field name="enable_multi_level_approval"/>
+                                <field name="approval_rule_id"/>
+                            </group>
+                            <group>
+                                <field name="auto_approve_threshold"/>
+                                <field name="require_receipt_above"/>
+                                <field name="default_manager_id"/>
+                            </group>
+                        </group>
+                        <group string="Currency Settings">
+                            <group>
+                                <field name="default_currency_id"/>
+                                <field name="auto_update_currency_rates"/>
+                            </group>
+                        </group>
+                        <group string="Employee Management">
+                            <group>
+                                <field name="auto_create_employee_on_user"/>
+                            </group>
+                        </group>
+                        <notebook string="Approval Sequence">
+                            <field name="approval_sequence_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="approver_id"/>
+                                    <field name="is_required"/>
+                                    <field name="is_active"/>
+                                    <field name="amount_min"/>
+                                    <field name="amount_max"/>
+                                    <field name="expense_category_ids" widget="many2many_tags"/>
+                                </tree>
+                            </field>
+                        </notebook>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>
