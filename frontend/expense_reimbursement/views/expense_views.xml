@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Expense Form View -->
+        <record id="view_expense_form" model="ir.ui.view">
+            <field name="name">expense.reimbursement.form</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <form string="Expense Form">
+                    <header>
+                        <button name="action_submit" string="Submit" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_manager_approve" string="Manager Approve" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'submitted')]}"/>
+                        <button name="action_admin_approve" string="Admin Approve" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'manager_approved')]}"/>
+                        <button name="action_reject" string="Reject" type="object" class="btn-danger" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'rejected'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,manager_approved,approved,rejected"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group name="expense_info">
+                                <field name="employee_id" readonly="1"/>
+                                <field name="amount"/>
+                                <field name="currency_id"/>
+                                <field name="date"/>
+                                <field name="description" placeholder="Enter expense description..."/>
+                            </group>
+                            <group name="approval_info">
+                                <field name="manager_id" readonly="1"/>
+                                <field name="admin_id" readonly="1"/>
+                                <field name="submit_date" readonly="1"/>
+                                <field name="manager_approval_date" readonly="1"/>
+                                <field name="admin_approval_date" readonly="1"/>
+                            </group>
+                        </group>
+                        <group name="comments" string="Comments">
+                            <field name="manager_comment" placeholder="Manager comments..." attrs="{'invisible': [('state', 'in', ['draft', 'submitted'])]}"/>
+                            <field name="admin_comment" placeholder="Admin comments..." attrs="{'invisible': [('state', 'in', ['draft', 'submitted', 'manager_approved'])]}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- My Expenses List View -->
+        <record id="view_my_expenses_tree" model="ir.ui.view">
+            <field name="name">expense.reimbursement.my.tree</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <tree string="My Expenses">
+                    <field name="date"/>
+                    <field name="description"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'submitted'" decoration-info="state == 'manager_approved'" decoration-danger="state == 'rejected'"/>
+                    <field name="manager_id"/>
+                    <button name="action_submit" string="Submit" type="object" icon="fa-send" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Pending Approvals List View -->
+        <record id="view_pending_approvals_tree" model="ir.ui.view">
+            <field name="name">expense.reimbursement.pending.tree</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <tree string="Pending Approvals" create="false" edit="false">
+                    <field name="employee_id"/>
+                    <field name="date"/>
+                    <field name="description"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="submit_date"/>
+                    <button name="action_manager_approve" string="Approve" type="object" icon="fa-check" class="btn-success" attrs="{'invisible': [('state', '!=', 'submitted')]}"/>
+                    <button name="action_reject" string="Reject" type="object" icon="fa-times" class="btn-danger" attrs="{'invisible': [('state', '!=', 'submitted')]}"/>
+                    <field name="manager_comment" placeholder="Add comment..." optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- All Expenses List View -->
+        <record id="view_all_expenses_tree" model="ir.ui.view">
+            <field name="name">expense.reimbursement.all.tree</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <tree string="All Expenses">
+                    <field name="employee_id"/>
+                    <field name="date"/>
+                    <field name="description"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'submitted'" decoration-info="state == 'manager_approved'" decoration-danger="state == 'rejected'"/>
+                    <field name="manager_id"/>
+                    <field name="admin_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Manager Approved List View -->
+        <record id="view_manager_approved_tree" model="ir.ui.view">
+            <field name="name">expense.reimbursement.manager_approved.tree</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <tree string="Manager Approved">
+                    <field name="employee_id"/>
+                    <field name="date"/>
+                    <field name="description"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="manager_id"/>
+                    <field name="manager_approval_date"/>
+                    <field name="manager_comment"/>
+                    <button name="action_admin_approve" string="Final Approve" type="object" icon="fa-check-circle" class="btn-success" attrs="{'invisible': [('state', '!=', 'manager_approved')]}"/>
+                    <button name="action_reject" string="Reject" type="object" icon="fa-times-circle" class="btn-danger" attrs="{'invisible': [('state', '!=', 'manager_approved')]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Kanban View for Dashboard -->
+        <record id="view_expense_kanban" model="ir.ui.view">
+            <field name="name">expense.reimbursement.kanban</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <kanban string="Expenses">
+                    <field name="employee_id"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><field name="employee_id"/></strong>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#" tabindex="-1"><i class="fa fa-ellipsis-v"/></a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_left">
+                                            <field name="amount"/> <field name="currency_id"/>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <field name="state" widget="label" decoration-success="state == 'approved'" decoration-warning="state == 'submitted'" decoration-info="state == 'manager_approved'" decoration-danger="state == 'rejected'"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_expense_search" model="ir.ui.view">
+            <field name="name">expense.reimbursement.search</field>
+            <field name="model">expense.reimbursement</field>
+            <field name="arch" type="xml">
+                <search string="Expenses">
+                    <field name="employee_id"/>
+                    <field name="description"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                    <filter string="Manager Approved" name="manager_approved" domain="[('state', '=', 'manager_approved')]"/>
+                    <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                    <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                    <separator/>
+                    <filter string="My Expenses" name="my_expenses" domain="[('employee_id', '=', uid)]"/>
+                    <filter string="Pending My Approval" name="pending_my_approval" domain="[('state', '=', 'submitted'), ('manager_id', '=', uid)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                        <filter string="Manager" name="group_manager" context="{'group_by': 'manager_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Actions -->
+        <record id="action_submit_expense" model="ir.actions.act_window">
+            <field name="name">Submit Expense</field>
+            <field name="res_model">expense.reimbursement</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_expense_form"/>
+            <field name="target">current</field>
+            <field name="context">{'default_state': 'draft'}</field>
+        </record>
+
+        <record id="action_my_expenses" model="ir.actions.act_window">
+            <field name="name">My Expenses</field>
+            <field name="res_model">expense.reimbursement</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_my_expenses_tree"/>
+            <field name="domain">[('employee_id', '=', uid)]</field>
+            <field name="context">{'search_default_my_expenses': 1}</field>
+        </record>
+
+        <record id="action_pending_approvals" model="ir.actions.act_window">
+            <field name="name">Pending Approvals</field>
+            <field name="res_model">expense.reimbursement</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_pending_approvals_tree"/>
+            <field name="domain">[('state', '=', 'submitted'), ('manager_id', '=', uid)]</field>
+            <field name="context">{'search_default_pending_my_approval': 1}</field>
+        </record>
+
+        <record id="action_all_expenses" model="ir.actions.act_window">
+            <field name="name">All Expenses</field>
+            <field name="res_model">expense.reimbursement</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_id" ref="view_all_expenses_tree"/>
+            <field name="context">{'search_default_group_state': 1}</field>
+        </record>
+
+        <record id="action_manager_approved" model="ir.actions.act_window">
+            <field name="name">Manager Approved</field>
+            <field name="res_model">expense.reimbursement</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_manager_approved_tree"/>
+            <field name="domain">[('state', '=', 'manager_approved')]</field>
+        </record>
+    </data>
+</odoo>
